@@ -10,6 +10,7 @@ build/
 gradle-app.setting
 
 # bottom sbt-level ignores
+scalajs/.settings/
 scalajs/.cache/
 scalajs/.history/
 scalajs/.lib/
@@ -23,6 +24,7 @@ scalajs/project/.ivy/
 scalajs/project/.sbtboot/
 scalajs/project/.boot/
 scalajs/project/project/
+scalajs/project/target/
 
 # Scala-IDE specific
 scalajs/.scala_dependencies
