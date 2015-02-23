@@ -1,5 +1,33 @@
+# global ignores
+*.class
+*.log
+
+# top gradle-level ignores
 .gradle
 build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
+
+# bottom sbt-level ignores
+scalajs/.cache/
+scalajs/.history/
+scalajs/.lib/
+scalajs/dist/*
+scalajs/target/
+scalajs/lib_managed/
+scalajs/src_managed/
+scalajs/project/boot/
+scalajs/project/plugins/project/
+scalajs/project/.ivy/
+scalajs/project/.sbtboot/
+scalajs/project/.boot/
+scalajs/project/project/
+
+# Scala-IDE specific
+scalajs/.scala_dependencies
+scalajs/.worksheet
+scalajs/.project
+scalajs/.classpath
+scalajs/.cache
+scalajs/.idea/*

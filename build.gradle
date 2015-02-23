@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'jetty'
+apply plugin: 'eclipse'
+
+ext.jettyVersion = "9.2.5.v20141112"
+
+
+repositories{
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies{
+    testCompile("junit:junit")
+}
+
+task buildScalaJS(type:Exec) {
+    workingDir './scalajs'
+    commandLine '../sbt','-no-share','fullOptJS'
+}
+
+task buildScalaJSLauncher(type:Exec, dependsOn: buildScalaJS) {
+    workingDir './scalajs'
+    commandLine '../sbt','-no-share','scalaJSLauncher'
+}
+
+task deployScalaJS(type: Copy, dependsOn: buildScalaJSLauncher) {
+    from('./scalajs/target/scala-2.11')
+    into('./src/main/webapp/javascript')
+    include('*.js')
+    include('*.map')
+}
+
+task webjar(type: Jar, dependsOn: "jar") { 
+    from(fileTree("scalajs/target/scala-2.11")) {  
+        into "META-INF/resources" 
+    } 
+
+}
