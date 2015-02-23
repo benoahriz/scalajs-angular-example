@@ -5,6 +5,7 @@
 # top gradle-level ignores
 .gradle
 build/
+src/main/webapp/javascript/scalajs/
 
 # Ignore Gradle GUI config
 gradle-app.setting
