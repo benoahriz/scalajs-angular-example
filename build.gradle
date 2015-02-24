@@ -26,7 +26,7 @@ task buildScalaJSLauncher(type:Exec, dependsOn: buildScalaJS) {
 
 task deployScalaJS(type: Copy, dependsOn: buildScalaJSLauncher) {
     from('./scalajs/target/scala-2.11')
-    into('./src/main/webapp/javascript')
+    into('./src/main/webapp/javascript/scalajs')
     include('*.js')
     include('*.map')
 }

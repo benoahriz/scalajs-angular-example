@@ -1,139 +1,68 @@
-sbt: the rebel cut
+ScalaJS + AngularJS built with Gradle
 ==================
 
-[![Build Status](https://travis-ci.org/paulp/sbt-extras.png)](https://travis-ci.org/paulp/sbt-extras)
+Project Directory Structure (the interesting bits)
+|
+-- gradle 
+   |
+   -- wrapper // checkin gradle files
+|
+-- scalajs
+   |
+   -- project // includes for sbt plugins
+   |
+   -- src/main/scala // scalajs source code
+|
+-- src/main/webapp // scalajs files are copied here
+|
+-- build.gradle // gradle tasks
+|
+-- sbt // this is a sbt wrapper: 
+    
+## How do I run it?
 
-An alternative script for running [sbt](https://github.com/sbt/sbt "sbt home").
-It works with sbt 0.13.0 projects and (in principle) all earlier versions.
-If you're in an sbt project directory, the system will figure out the
-required versions of sbt and scala, downloading them if necessary.
-
-## Installation
-
-Put the (self-contained) [sbt script](https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt "sbt") somewhere on your path, for instance:
-
+Step 1 Compile Scala to Javascript
 ```bash
-curl -s https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt > ~/bin/sbt \
-  && chmod 0755 ~/bin/sbt
+gradlew deployScalaJS
 ```
 
-## Sample usage
-
-sbt -v[erbosely] creating a new project built with the latest scala 2.10.x.
-
-```
-% sbt -v -210 -sbt-create about
-Detected sbt version 0.13.7
-Detected Java version: 1.8.0_25
-# Executing command line:
-/Library/Java/JavaVirtualMachines/jdk1.8.0_11.jdk/Contents/Home/bin/java
--jar
-$HOME/.sbt/launchers/0.13.7/sbt-launch.jar
-"++ 2.10.4"
-about
-
-[info] Setting version to 2.10.4
-[info] This is sbt 0.13.7
-[info] The current project is built against Scala 2.10.4
-[info] sbt, sbt plugins, and build definitions are using Scala 2.10.4
+Step 2 Run Web Server
+```bash
+gradlew jettyRun
 ```
 
-## sbt -h
+Step 3 Point your browser at: http://localhost:8080/scalajs-angular-example/html/index-fulloptjs.html
+
+## Why
+The intent was to make a more obvious build/deploy project for people using ScalaJS.  
+A couple important notes:
+* If you want cross compilation capability, and a ton of other cool Scala stuff please checkout @li_haoyi workbench: https://github.com/lihaoyi/workbench
+* You don't *have* to use Scala on the backend when using ScalaJS.  A good old Java/Jetty setup works just fine and is a nice complement to ScalaJS and AngularJS tech stack.
+
+## Running the code
+There is only 1 'main'.  This method is auto-detected by extending the JSApp.  This is particularly nice when working with Angular because it will just attach to the 'ng-app' attribute if you pass it the same name in both places.
+
+However if you are trying to run arbitrary HTML/Canvas code you can 'pass' into the compiled Javascript the HTML object...like this:
+```javascript
+SimpleCanvasApp().main(document.getElementById('canvas'));
 ```
-Usage: sbt [options]
+Other DOM objects should work just as well.
 
-Note that options which are passed along to sbt begin with -- whereas
-options to this runner use a single dash. Any sbt command can be scheduled
-to run first by prefixing the command with --, so --warn, --error and so on
-are not special.
+## IDEs
+The suggested IDE is the Scala IDE (Eclipse).  You can essentially  can import the project via the 'eclipse' task from SBT.  And have a second project for running the Gradle target.  IntelliJ should work just fine as well with the two projects.  Not sure about other tools.
 
-Output filtering: if there is a file in the home directory called .sbtignore
-and this is not an interactive sbt session, the file is treated as a list of
-bash regular expressions. Output lines which match any regex are not echoed.
-One can see exactly which lines would have been suppressed by starting this
-runner with the -x option.
+## Dependencies
+https://github.com/paulp/sbt-extras 
+This is used as a handy wrapper for SBT.  Also I find it useful to download Scala deps to a local project directory.  This avoids conflicts if you develop Scala day-to-day.
 
-  -h | -help         print this message
-  -v                 verbose operation (this runner is chattier)
-  -d, -w, -q         aliases for --debug, --warn, --error (q means quiet)
-  -x                 debug this script
-  -trace <level>     display stack traces with a max of <level> frames (default: -1, traces suppressed)
-  -debug-inc         enable debugging log for the incremental compiler
-  -no-colors         disable ANSI color codes
-  -sbt-create        start sbt even if current directory contains no sbt project
-  -sbt-dir   <path>  path to global settings/plugins directory (default: ~/.sbt/<version>)
-  -sbt-boot  <path>  path to shared boot directory (default: ~/.sbt/boot in 0.11+)
-  -ivy       <path>  path to local Ivy repository (default: ~/.ivy2)
-  -no-share          use all local caches; no sharing
-  -offline           put sbt in offline mode
-  -jvm-debug <port>  Turn on JVM debugging, open at the given port.
-  -batch             Disable interactive mode
-  -prompt <expr>     Set the sbt prompt; in expr, 's' is the State and 'e' is Extracted
+https://github.com/greencatsoft/scalajs-angular
+scalajs-angular aims to help developers build AngularJS based applications in type safe manner with Scala language.
 
-  # sbt version (default: sbt.version from project/build.properties if present, otherwise 0.13.7)
-  -sbt-force-latest         force the use of the latest release of sbt: 0.13.7
-  -sbt-version  <version>   use the specified version of sbt (default: 0.13.7)
-  -sbt-dev                  use the latest pre-release version of sbt: 0.13.8-M1
-  -sbt-jar      <path>      use the specified jar as the sbt launcher
-  -sbt-launch-dir <path>    directory to hold sbt launchers (default: ~/.sbt/launchers)
-  -sbt-launch-repo <url>    repo url for downloading sbt launcher jar (default: http://typesafe.artifactoryonline.com/typesafe/ivy-releases)
+https://github.com/scala-js/scala-js-dom
+Scala-js-dom provides a nice statically typed interface to the DOM such that it can be called from Scala code without resorting to js.Dynamic. All javascript globals functions, singletons and classes are members of the org.scalajs.dom, org.scalajs.dom.html, org.scalajs.dom.svg, etc. packages.
 
-  # scala version (default: as chosen by sbt)
-  -28                       use 2.8.2
-  -29                       use 2.9.3
-  -210                      use 2.10.4
-  -211                      use 2.11.4
-  -scala-home <path>        use the scala build at the specified directory
-  -scala-version <version>  use the specified version of scala
-  -binary-version <version> use the specified scala version when searching for dependencies
+https://github.com/scalatest/scalatest
+Since to 'run' ScalaJS you need to deploy it first.  It's super important to have a way to quickly test your ScalaJS code in place...hence the need for ScalaTest to be integrated into the project.
 
-  # java version (default: java from PATH, currently java version "1.7.0_65")
-  -java-home <path>         alternate JAVA_HOME
-
-  # passing options to the jvm - note it does NOT use JAVA_OPTS due to pollution
-  # The default set is used if JVM_OPTS is unset and no -jvm-opts file is found
-  <default>        -XX:MaxPermSize=384m -Xms512m -Xmx1536m -Xss2m -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC
-  JVM_OPTS         environment variable holding either the jvm args directly, or
-                   the reference to a file containing jvm args if given path is prepended by '@' (e.g. '@/etc/jvmopts')
-                   Note: "@"-file is overridden by local '.jvmopts' or '-jvm-opts' argument.
-  -jvm-opts <path> file containing jvm args (if not given, .jvmopts in project root is used if present)
-  -Dkey=val        pass -Dkey=val directly to the jvm
-  -J-X             pass option -X directly to the jvm (-J is stripped)
-
-  # passing options to sbt, OR to this runner
-  SBT_OPTS         environment variable holding either the sbt args directly, or
-                   the reference to a file containing sbt args if given path is prepended by '@' (e.g. '@/etc/sbtopts')
-                   Note: "@"-file is overridden by local '.sbtopts' or '-sbt-opts' argument.
-  -sbt-opts <path> file containing sbt args (if not given, .sbtopts in project root is used if present)
-  -S-X             add -X to sbt's scalacOptions (-S is stripped)
-```
-
-## My ~/.sbtignore - fairly aggressive.
-
-```
-# sbt ignore regexps
-Starting sbt with output filtering enabled
-^\[info\][ ]+(Resolving|Loading|Done|Attempting|Formatting|Updating)[ ]
-^\[info\] Main Scala API documentation
-^\[info\].*published[ ]+.*(sources\.jar|javadoc\.jar|\.pom)$
-^\[info\].*published ivy to
-^\[warn\] Credentials file
-^\[info\] Wrote.*[.]pom
-This usage is deprecated
-Attempting to overwrite
-delivering ivy file to
-warnings? found$
-re[-]run with [-](unchecked|deprecation|feature) for details
-model contains[ ]
-[ ]delivering[ ]
-^Graphviz dot encountered an error when generating the diagram for:
-^These are usually spurious errors, but if you notice a persistant error on
-^a diagram, please use the -diagrams-debug flag and report a bug with the output
-^Graphviz will be restarted...
-^Diagrams will be disabled for this run because the graphviz dot tool
-^has malfunctioned too many times. These scaladoc flags may help:
-^Please note that graphviz package
-^[*]+$
-^-diagrams-
-^$
-```
+## A final note, a bit about webjars
+For this particular project I ended up largely avoiding using webjars and just the 'war' format.  However there is a Gradle task to create a webjar from the compiled ScalaJS Javascript if you find that you need it.
