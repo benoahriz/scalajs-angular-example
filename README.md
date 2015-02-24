@@ -2,6 +2,7 @@ ScalaJS + AngularJS built with Gradle
 ==================
 
 Project Directory Structure (the interesting bits)
+```
 |
 +- gradle 
    |
@@ -18,6 +19,7 @@ Project Directory Structure (the interesting bits)
 +- build.gradle // gradle tasks
 |
 +- sbt // this is a sbt wrapper: 
+```
     
 ## How do I run it?
 
