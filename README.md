@@ -3,21 +3,21 @@ ScalaJS + AngularJS built with Gradle
 
 Project Directory Structure (the interesting bits)
 |
--- gradle 
++- gradle 
    |
-   -- wrapper // checkin gradle files
+   +- wrapper // checkin gradle files
 |
--- scalajs
++- scalajs
    |
-   -- project // includes for sbt plugins
+   +- project // includes for sbt plugins
    |
-   -- src/main/scala // scalajs source code
+   +- src/main/scala // scalajs source code
 |
--- src/main/webapp // scalajs files are copied here
++- src/main/webapp // scalajs files are copied here
 |
--- build.gradle // gradle tasks
++- build.gradle // gradle tasks
 |
--- sbt // this is a sbt wrapper: 
++- sbt // this is a sbt wrapper: 
     
 ## How do I run it?
 
